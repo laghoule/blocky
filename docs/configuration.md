@@ -554,6 +554,54 @@ The supported list formats are:
 !!! warning
     You must also define a client group mapping, otherwise the allow/denylist definitions will have no effect.
 
+#### Schedules for blacklists
+
+It's possible to create schedules for your blacklists. When the schedule is active, the blocking will occur, when inactive, the blacklist will be skipped.
+
+!!! example
+
+    ```yaml
+    blocking:
+      blackLists:
+        ads:
+          - https://s3.amazonaws.com/lists.disconnect.me/simple_ad.txt
+          - https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+          - |
+            # inline definition using YAML literal block scalar style
+            # content is in plain domain list format
+            someadsdomain.com
+            anotheradsdomain.com
+            *.wildcard.example.com # blocks wildcard.example.com and all subdomains
+          - |
+            # inline definition with a regex
+            /^banners?[_.-]/
+        special:
+          - https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews/hosts
+        youtube:
+          - https://raw.githubusercontent.com/gieljnssns/Social-media-Blocklists/master/pihole-youtube.txt
+      whiteLists:
+        ads:
+          - whitelist.txt
+          - /path/to/file.txt
+          - |
+            # inline definition with YAML literal block scalar style
+            whitelistdomain.com
+      schedules:
+         youtube:
+          - days: ["Mon", "Tue", "Wed", "Thu"]
+            hoursRanges:
+              - "06:45-08:30"
+              - "19:00-23:30"
+          - days: ["Sun"]
+            hoursRanges:
+              - "20:00-23:30"  
+    ```
+
+In this example, the **youtube** blacklist will be active at the specified days, between the specified hours ranges.
+
+!!! note
+    Whitelists is respected when a sheduled blacklist is active.
+
 #### Wildcard support
 
 You can use wildcards to block a domain and all its subdomains.
